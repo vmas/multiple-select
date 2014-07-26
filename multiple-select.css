@@ -25,6 +25,15 @@
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 	background-color: #fff;
+	
+	background-color: #fff;
+	background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, #ffffff), color-stop(50%, #f6f6f6), color-stop(52%, #eeeeee), color-stop(100%, #f4f4f4));
+	background: -webkit-linear-gradient(top, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
+	background: -moz-linear-gradient(top, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
+	background: -o-linear-gradient(top, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
+	background: linear-gradient(top, #ffffff 20%, #f6f6f6 50%, #eeeeee 52%, #f4f4f4 100%);
+	background-clip: padding-box;
+	box-shadow: 0 0 3px white inset, 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .ms-choice.disabled {
@@ -56,11 +65,11 @@
 	right: 0;
 	width: 20px;
 	height: 25px;
-	background: url('multiple-select.png') right top no-repeat;
+	background: url('multiple-select.png') -1px 4px no-repeat;
 }
 
 .ms-choice > div.open {
-	background: url('multiple-select.png') left top no-repeat;
+	background: url('multiple-select.png') -19px 4px no-repeat;
 }
 
 .ms-drop {
@@ -119,13 +128,13 @@
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
-	background: #fff url('multiple-select.png') no-repeat 100% -22px;
-	background: url('multiple-select.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
-	background: url('multiple-select.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-	background: url('multiple-select.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-	background: url('multiple-select.png') no-repeat 100% -22px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
-	background: url('multiple-select.png') no-repeat 100% -22px, -ms-linear-gradient(top, #ffffff 85%, #eeeeee 99%);
-	background: url('multiple-select.png') no-repeat 100% -22px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+	background: #fff url('multiple-select.png') no-repeat 100% -20px;
+	background: url('multiple-select.png') no-repeat 100% -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
+	background: url('multiple-select.png') no-repeat 100% -20px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+	background: url('multiple-select.png') no-repeat 100% -20px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
+	background: url('multiple-select.png') no-repeat 100% -20px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
+	background: url('multiple-select.png') no-repeat 100% -20px, -ms-linear-gradient(top, #ffffff 85%, #eeeeee 99%);
+	background: url('multiple-select.png') no-repeat 100% -20px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
 }
 
 .ms-search input {
@@ -180,6 +189,12 @@
 	font-weight: normal;
 	display: block;
 	white-space: nowrap;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .ms-drop ul > li label.optgroup {
@@ -193,3 +208,16 @@
 .ms-drop .ms-no-results {
 	display: none;
 }
+
+.ms-remove {
+	display: block;
+	float: right;
+	width: 12px;
+	height: 12px;
+	background: url('multiple-select.png') -42px 1px no-repeat;
+	font-size: 1px;
+}
+	.ms-remove:hover {
+		background: url('multiple-select.png') -42px -10px no-repeat;
+	}
+

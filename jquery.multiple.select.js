@@ -64,7 +64,7 @@
 				html = [];
 			if (this.options.filter) {
 				html.push('<div class="ms-search">');
-				if (this.options.allowAdding) {
+				if (this.options.multiline) {
 					html.push('<textarea rows="1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>');
 				} else {
 					html.push('<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">');
@@ -92,12 +92,13 @@
 			this.$drop.find('ul').css('max-height', this.options.maxHeight + 'px');
 			this.$drop.find('.multiple').css('width', this.options.multipleWidth + 'px');
 
-			this.$searchInput = this.$drop.find('.ms-search ' + (this.options.allowAdding ? 'textarea' : 'input'));
+			this.$searchInput = this.$drop.find('.ms-search ' + (this.options.multiline ? 'textarea' : 'input'));
 			this.$selectAll = this.$drop.find('input[' + this.selectAllName + ']');
 			this.$selectGroups = this.$drop.find('input[' + this.selectGroupName + ']');
 			this.$selectItems = this.$drop.find('input[' + this.selectItemName + ']:enabled');
 			this.$disableItems = this.$drop.find('input[' + this.selectItemName + ']:disabled');
 			this.$noResults = this.$drop.find('.ms-no-results');
+			this.$removeButtons = this.$drop.find('.ms-remove');
 			this.events();
 			this.updateSelectAll(true);
 			this.update(true);
@@ -147,7 +148,12 @@
 							(disabled ? ' disabled="disabled"' : '') +
 							(group ? ' data-group="' + group + '"' : '') +
 							'/> ',
-						text,
+						text
+					);
+					if (!disabled && that.options.modifiable) {
+						html.push('<a class="ms-remove" data-index="' + i + '"></a>');
+					}
+					html.push(
 						'</label>',
 						'</li>'
 					);
@@ -208,12 +214,11 @@
 			this.$searchInput.off('keydown').on('keydown', function (e) {
 				if (e.keyCode === 9 && e.shiftKey) { // Ensure shift-tab causes lost focus from filter as with clicking away
 					that.close();
-				} else if (e.keyCode === 13 && !e.shiftKey && that.options.allowAdding) {
+				} else if (e.keyCode === 13 && !e.shiftKey && that.options.modifiable) {
 					$(this.value.split('\n')).each(function (i, v) {
 						v = $.trim(v);
-						v = that.options.onAdd(that.$el, v, v);
-						if (v && v.value !== undefined && v.text !== undefined) {
-							v.selected = true;
+						v = that.options.onAdd(that.$el, { text: v, value: v, selected: true });
+						if (v && typeof v.value !== 'undefined' && typeof v.text !== 'undefined') {
 							that.$el.append($('<option/>', v));
 						}
 					});
@@ -271,6 +276,15 @@
 				if (that.options.single && that.options.isOpen && !that.options.keepOpen) {
 					that.close();
 				}
+			});
+			this.$removeButtons.off('click').on('click', function (e) {
+				var index = ($(this).data('index') | 0);
+				if (that.options.onRemove(index)) {
+					that.$el.children('option').eq(index).remove();
+					that.refresh();
+				}
+				e.stopPropagation();
+				return false;
 			});
 		},
 
@@ -568,7 +582,8 @@
 		blockSeparator: '',
 		displayValues: false,
 		delimiter: ', ',
-		allowAdding: false,
+		modifiable: false,
+		multiline: false,
 
 		styler: function () {
 			return false;
@@ -601,18 +616,21 @@
 		onClick: function () {
 			return false;
 		},
-		onAdd: function ($elm, text, value) {
+		onAdd: function ($elm, data) {
 			var found = false;
 			$elm.children('option').each(function (n, opt) {
-				if (opt.value == value) {
+				if (opt.value == data.value) {
 					found = true;
 					return false;
 				}
-			})
+			});
 			if (found) {
 				return false;
 			}
-			return { text: text, value: value }
+			return data;
+		},
+		onRemove: function (index) {
+			return true;
 		}
 	};
 })(jQuery);
