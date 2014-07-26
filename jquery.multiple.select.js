@@ -518,6 +518,8 @@
 				this.$selectItems.parent().show();
 				this.$disableItems.parent().show();
 				this.$selectGroups.parent().show();
+				this.$noResults.hide();
+				this.$selectAll.parent().show();
 			} else {
 				this.$selectItems.each(function () {
 					var $parent = $(this).parent();
