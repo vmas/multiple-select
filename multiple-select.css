@@ -215,6 +215,25 @@
 	display: none;
 }
 
+.ms-drop-controlbox {
+	text-align: right;
+	margin: 5px 8px;
+	padding: 5px 0;
+	border-top: 1px solid #ddd;
+}
+
+.ms-select-all, .ms-remove-all {
+	display: inline-block;
+	white-space: nowrap;
+	width: 80px;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 .ms-remove {
 	position: relative;
 	right: -12px;

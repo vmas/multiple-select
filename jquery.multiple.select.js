@@ -72,28 +72,37 @@
 				html.push('</div>');
 			}
 			html.push('<ul>');
-			if (this.options.selectAll && !this.options.single) {
-				html.push(
-					'<li class="ms-select-all">',
-					'<label>',
-					'<input type="checkbox" ' + this.selectAllName + ' /> ',
-					this.options.selectAllDelimiter[0] + this.options.selectAllText + this.options.selectAllDelimiter[1],
-					'</label>',
-					'</li>'
-				);
-			}
 			$.each(this.$el.children(), function (i, elm) {
 				html.push(that.optionToHtml(i, elm));
 			});
-			html.push('<li class="ms-no-results">' + this.options.noMatchesFound + '</li>');
-			html.push('</ul>');
+			html.push(
+				'<li class="ms-no-results">' + this.options.noMatchesFound + '</li>',
+				'</ul>',
+				'<div class="ms-drop-controlbox">'
+			);
+			if (this.options.selectAll && !this.options.single) {
+				html.push(
+					'<a class="ms-select-all">',
+					this.options.selectAllText,
+					'</a>'
+				);
+			}
+			if (this.options.modifiable) {
+				html.push(
+					'<a class="ms-remove-all">',
+					this.options.removeAllText,
+					'</a>'
+				);
+			}
+			html.push('</div>');
 			this.$drop.html(html.join(''));
 
 			this.$drop.find('ul').css('max-height', this.options.maxHeight + 'px');
 			this.$drop.find('.multiple').css('width', this.options.multipleWidth + 'px');
 
 			this.$searchInput = this.$drop.find('.ms-search ' + (this.options.multiline ? 'textarea' : 'input'));
-			this.$selectAll = this.$drop.find('input[' + this.selectAllName + ']');
+			this.$selectAll = this.$drop.find('.ms-select-all');
+			this.$removeAll = this.$drop.find('.ms-remove-all');
 			this.$selectGroups = this.$drop.find('input[' + this.selectGroupName + ']');
 			this.$selectItems = this.$drop.find('input[' + this.selectItemName + ']:enabled');
 			this.$disableItems = this.$drop.find('input[' + this.selectItemName + ']:disabled');
@@ -241,7 +250,7 @@
 				that.filter();
 			});
 			this.$selectAll.off('click').on('click', function () {
-				var checked = $(this).prop('checked'),
+				var checked = $(this).toggleClass('ms-select-all-checked').is('.ms-select-all-checked'),
 					$items = that.$selectItems.filter(':visible');
 				if ($items.length === that.$selectItems.length) {
 					that[checked ? 'checkAll' : 'uncheckAll']();
@@ -288,6 +297,20 @@
 				}
 				e.stopPropagation();
 				return false;
+			});
+			this.$removeAll.off('click').on('click', function () {
+				var indexes = [];
+				$('.ms-remove').each(function (i, item) {
+					var index = ($(this).data('index') | 0);
+					if (that.options.onRemove(index)) {
+						indexes.push(index);
+					}
+				});
+				var $options = that.$el.children('option');
+				for (var i = indexes.length - 1; i >= 0; i--) {
+					$options.eq(indexes[i]).remove();
+				}
+				that.refresh();
 			});
 		},
 
@@ -568,7 +591,7 @@
 		placeholder: '',
 		selectAll: true,
 		selectAllText: 'Select all',
-		selectAllDelimiter: ['[', ']'],
+		removeAllText: 'Remove all',
 		allSelected: 'All selected',
 		minumimCountSelected: 3,
 		countSelected: '# of % selected',
