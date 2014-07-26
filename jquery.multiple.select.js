@@ -65,7 +65,7 @@
 			if (this.options.filter) {
 				html.push('<div class="ms-search">');
 				if (this.options.multiline) {
-					html.push('<textarea rows="1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>');
+					html.push('<textarea rows="1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" wrap="off"></textarea>');
 				} else {
 					html.push('<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">');
 				}
@@ -142,7 +142,12 @@
 				} else {
 					html.push(
 						'<li' + clss + style + '>',
-						'<label' + (disabled ? ' class="disabled"' : '') + '>',
+						'<label' + (disabled ? ' class="disabled"' : '') + '>'
+					);
+					if (!disabled && that.options.modifiable) {
+						html.push('<a class="ms-remove" data-index="' + i + '"></a>');
+					}
+					html.push(
 						'<input type="' + type + '" ' + this.selectItemName + ' value="' + value + '"' +
 							(selected ? ' checked="checked"' : '') +
 							(disabled ? ' disabled="disabled"' : '') +
@@ -150,9 +155,7 @@
 							'/> ',
 						text
 					);
-					if (!disabled && that.options.modifiable) {
-						html.push('<a class="ms-remove" data-index="' + i + '"></a>');
-					}
+
 					html.push(
 						'</label>',
 						'</li>'

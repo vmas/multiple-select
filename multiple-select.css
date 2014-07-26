@@ -117,6 +117,9 @@
 	width: 100%;
 	min-height: 24px;
 	padding: 3px 20px 0 5px;
+	height: 1em;
+	overflow-x: hidden;
+	overflow-y: auto;
 	margin: 0;
 	outline: 0;
 	font-family: sans-serif;
@@ -186,6 +189,9 @@
 }
 
 .ms-drop ul > li label {
+	padding-right: 10px;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
 	font-weight: normal;
 	display: block;
 	white-space: nowrap;
@@ -210,6 +216,9 @@
 }
 
 .ms-remove {
+	position: relative;
+	right: -12px;
+	top: 2px;
 	display: block;
 	float: right;
 	width: 12px;
