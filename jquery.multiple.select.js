@@ -61,7 +61,8 @@
 
 		init: function () {
 			var that = this,
-				html = [];
+				html = [],
+				displayControlBox = this.options.modifiable || (this.options.selectAll && !this.options.single);
 			if (this.options.filter) {
 				html.push('<div class="ms-search">');
 				if (this.options.multiline) {
@@ -77,24 +78,26 @@
 			});
 			html.push(
 				'<li class="ms-no-results">' + this.options.noMatchesFound + '</li>',
-				'</ul>',
-				'<div class="ms-drop-controlbox">'
+				'</ul>'
 			);
-			if (this.options.selectAll && !this.options.single) {
-				html.push(
-					'<a class="ms-select-all">',
-					this.options.selectAllText,
-					'</a>'
-				);
+			if (displayControlBox) {
+				html.push('<div class="ms-drop-controlbox">');
+				if (this.options.selectAll && !this.options.single) {
+					html.push(
+						'<a class="ms-select-all">',
+						this.options.selectAllText,
+						'</a>'
+					);
+				}
+				if (this.options.modifiable) {
+					html.push(
+						'<a class="ms-remove-all">',
+						this.options.removeAllText,
+						'</a>'
+					);
+				}
+				html.push('</div>');
 			}
-			if (this.options.modifiable) {
-				html.push(
-					'<a class="ms-remove-all">',
-					this.options.removeAllText,
-					'</a>'
-				);
-			}
-			html.push('</div>');
 			this.$drop.html(html.join(''));
 
 			this.$drop.find('ul').css('max-height', this.options.maxHeight + 'px');
