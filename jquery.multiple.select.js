@@ -91,8 +91,8 @@
 				}
 				if (this.options.modifiable) {
 					html.push(
-						'<a class="ms-remove-all">',
-						this.options.removeAllText,
+						'<a class="ms-remove-selected">',
+						this.options.removeSelectedText,
 						'</a>'
 					);
 				}
@@ -105,7 +105,7 @@
 
 			this.$searchInput = this.$drop.find('.ms-search ' + (this.options.multiline ? 'textarea' : 'input'));
 			this.$selectAll = this.$drop.find('.ms-select-all');
-			this.$removeAll = this.$drop.find('.ms-remove-all');
+			this.$removeSelected = this.$drop.find('.ms-remove-selected');
 			this.$selectGroups = this.$drop.find('input[' + this.selectGroupName + ']');
 			this.$selectItems = this.$drop.find('input[' + this.selectItemName + ']:enabled');
 			this.$disableItems = this.$drop.find('input[' + this.selectItemName + ']:disabled');
@@ -301,12 +301,15 @@
 				e.stopPropagation();
 				return false;
 			});
-			this.$removeAll.off('click').on('click', function () {
+			this.$removeSelected.off('click').on('click', function () {
 				var indexes = [];
 				$('.ms-remove').each(function (i, item) {
-					var index = ($(this).data('index') | 0);
-					if (that.options.onRemove(index)) {
-						indexes.push(index);
+					var $item = $(this);
+					if ($item.closest('li').is('.selected')) {
+						var index = ($item.data('index') | 0);
+						if (that.options.onRemove(index)) {
+							indexes.push(index);
+						}
 					}
 				});
 				var $options = that.$el.children('option');
@@ -596,7 +599,7 @@
 		placeholder: '',
 		selectAll: true,
 		selectAllText: 'Select all',
-		removeAllText: 'Remove all',
+		removeSelectedText: 'Remove selected',
 		allSelected: 'All selected',
 		selectedPrefix: '',
 		minumimCountSelected: 3,

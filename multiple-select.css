@@ -222,7 +222,7 @@
 	border-top: 1px solid #ddd;
 }
 
-.ms-select-all, .ms-remove-all {
+.ms-select-all, .ms-remove-selected {
 	display: inline-block;
 	white-space: nowrap;
 	width: 80px;
@@ -232,6 +232,10 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+.ms-remove-selected {
+	width: 120px;
 }
 
 .ms-remove {
