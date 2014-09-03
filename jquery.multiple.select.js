@@ -230,14 +230,20 @@
 				if (e.keyCode === 9 && e.shiftKey) { // Ensure shift-tab causes lost focus from filter as with clicking away
 					that.close();
 				} else if (e.keyCode === 13 && !e.shiftKey && that.options.modifiable) {
+					var items = [];
 					$(this.value.split('\n')).each(function (i, v) {
 						v = $.trim(v);
 						v = that.options.onAdd(that.$el, { text: v, value: v, selected: true });
 						if (v && typeof v.value !== 'undefined' && typeof v.text !== 'undefined') {
-							that.$el.append($('<option/>', v));
+							var opt = $('<option/>', v);
+							that.$el.append(opt);
+							items.push(opt.get(0));
 						}
 					});
-					that.refresh();
+					if (items.length > 0) {
+						that.options.onAdded(items);
+						that.refresh();
+					}
 					return false;
 				}
 			}).off('keyup').on('keyup', function (e) {
@@ -295,7 +301,7 @@
 			this.$removeButtons.off('click').on('click', function (e) {
 				var index = ($(this).data('index') | 0);
 				if (that.options.onRemove(index)) {
-					that.$el.children('option').eq(index).remove();
+					that.options.onRemoved([that.$el.children('option').eq(index).remove().get(0)]);
 					that.refresh();
 				}
 				e.stopPropagation();
@@ -312,11 +318,15 @@
 						}
 					}
 				});
+				var items = [];
 				var $options = that.$el.children('option');
 				for (var i = indexes.length - 1; i >= 0; i--) {
-					$options.eq(indexes[i]).remove();
+					items.push($options.eq(indexes[i]).remove().get(0));
 				}
-				that.refresh();
+				if (items.length > 0) {
+					that.options.onRemoved(items);
+					that.refresh();
+				}
 			});
 		},
 
@@ -664,8 +674,14 @@
 			}
 			return data;
 		},
+		onAdded: function (elms) {
+
+		},
 		onRemove: function (index) {
 			return true;
+		},
+		onRemoved: function (elms) {
+
 		}
 	};
 })(jQuery);
