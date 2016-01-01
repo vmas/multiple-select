@@ -573,7 +573,8 @@
 				'enable', 'disable',
 				'checkAll', 'uncheckAll',
 				'focus', 'blur',
-				'refresh'
+				'refresh',
+				'open', 'close',
 			];
 
 		this.each(function () {
