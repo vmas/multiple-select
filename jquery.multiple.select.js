@@ -233,7 +233,7 @@
 					var items = [];
 					$(this.value.split('\n')).each(function (i, v) {
 						v = $.trim(v);
-						v = that.options.onAdd(that.$el, { text: v, value: v, selected: true });
+						v = that.options.onAdd.call(that, that.$el, { text: v, value: v, selected: true });
 						if (v && typeof v.value !== 'undefined' && typeof v.text !== 'undefined') {
 							var opt = $('<option/>', v);
 							that.$el.append(opt);
@@ -241,7 +241,7 @@
 						}
 					});
 					if (items.length > 0) {
-						that.options.onAdded(items);
+						that.options.onAdded.call(that, items);
 						that.refresh();
 					}
 					return false;
@@ -278,7 +278,7 @@
 				$children.prop('checked', checked);
 				that.updateSelectAll();
 				that.update();
-				that.options.onOptgroupClick({
+				that.options.onOptgroupClick.call(that, {
 					label: $(this).parent().text(),
 					checked: checked,
 					children: $children.get()
@@ -288,7 +288,7 @@
 				that.updateSelectAll();
 				that.update();
 				that.updateOptGroupSelect();
-				that.options.onClick({
+				that.options.onClick.call(that, {
 					label: $(this).parent().text(),
 					value: $(this).val(),
 					checked: $(this).prop('checked')
@@ -300,8 +300,8 @@
 			});
 			this.$removeButtons.off('click').on('click', function (e) {
 				var index = ($(this).data('index') | 0);
-				if (that.options.onRemove(index)) {
-					that.options.onRemoved([that.$el.children('option').eq(index).remove().get(0)]);
+				if (that.options.onRemove.call(that, index)) {
+					that.options.onRemoved.call(that, [that.$el.children('option').eq(index).remove().get(0)]);
 					that.refresh();
 				}
 				e.stopPropagation();
@@ -313,7 +313,7 @@
 					var $item = $(this);
 					if ($item.closest('li').is('.selected')) {
 						var index = ($item.data('index') | 0);
-						if (that.options.onRemove(index)) {
+						if (that.options.onRemove.call(that, index)) {
 							indexes.push(index);
 						}
 					}
@@ -324,7 +324,7 @@
 					items.push($options.eq(indexes[i]).remove().get(0));
 				}
 				if (items.length > 0) {
-					that.options.onRemoved(items);
+					that.options.onRemoved.call(that, items);
 					that.refresh();
 				}
 			});
