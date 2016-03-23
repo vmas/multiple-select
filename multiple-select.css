@@ -45,18 +45,28 @@
 
 .ms-choice > span {
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 20px;
+	top: 1px;
+	left: 1px;
+	bottom: 1px;
+	right: 26px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: block;
 	padding-left: 8px;
+	border-radius: 4px 0 0 4px;
 }
 
 .ms-choice > span.placeholder {
 	color: #999;
+}
+
+.ms-choice > span[contenteditable] {
+	background: #fff;
+	border-right: 1px solid #aaa;
+	color: #000;
+	text-overflow: initial;
+	padding-right: 8px;
 }
 
 .ms-choice > div {

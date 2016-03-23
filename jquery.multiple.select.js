@@ -25,8 +25,9 @@
 			attValue = (att === 'class' ? ('ms-parent' + (attValue ? ' ' : '')) : '') + attValue;
 			return attValue ? (' ' + att + '="' + attValue + '"') : '';
 		}).join('') + ' />');
-		this.$choice = $('<button type="button" class="ms-choice"><span class="placeholder">' +
-			options.placeholder + '</span><div></div></button>');
+		this.$choice = $('<div role="button" class="ms-choice"><span class="placeholder' + (options.combo ? ' ms-combo" contenteditable="true">' : '">') +
+			options.placeholder + '</span><div></div></div>');
+		this.$combo = this.$choice.children('span[contenteditable]');
 		this.$drop = $('<div class="ms-drop ' + options.position + '"></div>');
 		this.$el.after(this.$parent);
 		this.$parent.append(this.$choice);
@@ -118,6 +119,7 @@
 			if (this.options.isOpen) {
 				this.open();
 			}
+			$(this.options.combo).hide();
 		},
 
 		optionToHtml: function (i, elm, group, groupDisabled) {
@@ -217,7 +219,22 @@
 			this.$choice.off('click').on('click', toggleOpen)
 						.off('focus').on('focus', this.options.onFocus)
 						.off('blur').on('blur', this.options.onBlur);
-
+			this.$combo.off('click').on('click', function () {
+				return false;
+			}).off('keydown').on('keydown', function (e) {
+				if (e.keyCode === 13) {
+					that.close();
+					that.focus();
+					return false;
+				} else if (!that.options.isOpen) {
+					that.open();
+				}
+			}).off('keyup').on('keyup', function (e) {
+				$(that.options.combo).val(that.$combo.text());
+				that.filter();
+			}).off('change').on('blur keyup paste', function () {
+				$(that.options.combo).val(that.$combo.text());
+			});
 			this.$parent.off('keydown').on('keydown', function (e) {
 				switch (e.which) {
 					case 27: // esc key
@@ -377,6 +394,7 @@
 
 		update: function (isInit) {
 			var selects = this.getSelects(),
+				selectsText = this.getSelects('text'),
 				$span = this.$choice.find('>span');
 
 			if (selects.length === 0) {
@@ -386,11 +404,11 @@
 				$span.removeClass('placeholder').html(this.options.selectedPrefix + this.options.allSelected);
 			} else if (this.options.countSelected && selects.length < this.options.minumimCountSelected) {
 				$span.removeClass('placeholder')
-					.html(this.options.selectedPrefix + (this.options.displayValues ? selects : this.getSelects('text'))
+					.html(this.options.selectedPrefix + (this.options.displayValues ? selects : selectsText)
 					.join(this.options.delimiter));
 			} else if ((this.options.countSelected || this.options.etcaetera) && selects.length > this.options.minumimCountSelected) {
 				if (this.options.etcaetera) {
-					$span.removeClass('placeholder').html(this.options.selectedPrefix + (this.options.displayValues ? selects : this.getSelects('text').slice(0, this.options.minumimCountSelected)).join(this.options.delimiter) + '...');
+					$span.removeClass('placeholder').html(this.options.selectedPrefix + (this.options.displayValues ? selects : selectsText.slice(0, this.options.minumimCountSelected)).join(this.options.delimiter) + '...');
 				}
 				else {
 					$span.removeClass('placeholder')
@@ -401,11 +419,14 @@
 				}
 			} else {
 				$span.removeClass('placeholder').html(
-					this.options.selectedPrefix + (this.options.displayValues ? selects : this.getSelects('text'))
+					this.options.selectedPrefix + (this.options.displayValues ? selects : selectsText)
 						.join(this.options.delimiter));
 			}
 			// set selects to select
-			this.$el.val(this.getSelects());
+			this.$el.val(selects);
+			if (this.options.combo) {
+				$(this.options.combo).val(this.options.displayValues ? selects : selectsText);
+			}
 
 			// add selected class to selected li
 			this.$drop.find('li').removeClass('selected');
@@ -529,7 +550,7 @@
 
 		filter: function () {
 			var that = this,
-				text = $.trim(this.$searchInput.val()).toLowerCase();
+				text = $.trim(this.options.combo ? this.$combo.text() : this.$searchInput.val()).toLowerCase();
 			if (text.length === 0) {
 				this.$selectItems.parent().show();
 				this.$disableItems.parent().show();
@@ -630,6 +651,7 @@
 		delimiter: ', ',
 		modifiable: false,
 		multiline: false,
+		combo: '',
 
 		styler: function () {
 			return false;
